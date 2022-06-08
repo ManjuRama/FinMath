@@ -25,7 +25,7 @@ vix = yf.Ticker ("vix")
 hist = vix.history(period="max")
 interval = "1d"
 
-vix = yf.download("^VIX", start="2006-01-01", end="2022-05-31")
+vix = yf.download("^VIX", start="2006-01-01", end="2022-06-06")
 
 # Manipulate the index to datetime from object
 vix.index = pd.to_datetime(vix.index)
@@ -42,16 +42,21 @@ vix.iplot(kind='line', title='CBOE Volatily Index')
 # unique years for which we have VIX data
 years = vix.index.year.unique()
 newdf = pd.DataFrame()
+
+# just use VIX close values 
 for year in years:
 	newdf[year] = pd.Series(vix[vix.index.year==year]['Adj Close']).reset_index(drop=True)
 vix.head()
 
 newdf = newdf.ffill(axis=1)
 newdf.head()
+
+# print descriptive stats
 newdf.describe().T
 
+# now boxplot -- plot outliers
 newdf.iloc[:,2:].iplot(kind='box', 
-            title='Manju CBOE Volatility Index', 
+            title='CBOE Volatility Index', 
             yTitle='Annualised Volatility (%)', 
             legend=False, boxpoints='outliers')
 
